@@ -2,7 +2,7 @@
 
 Youtube thumbnail to CD-like cover image converter
 
-See [Examples](#example)
+See [Examples](#examples)
 
 ## Usage
 
