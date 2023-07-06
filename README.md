@@ -26,7 +26,7 @@ python thm_to_cover.py thm-filename
 
 ## Requirements
 ```shell
-pip install -r requirments.txt
+pip install -r requirements.txt
 ```
 * [requests](https://github.com/psf/requests)
 * [opencv-python](https://github.com/opencv/opencv-python)
