@@ -3,7 +3,7 @@ import os
 import subprocess
 
 from thm_to_cover import thm_to_cover
-from yt_thm_dl import yt_thm_dl
+from yt_thm_dl import get_yt_vid, yt_thm_dl
 
 
 def parse_args():
@@ -24,26 +24,27 @@ def parse_args():
 
 def main():
     args = parse_args()
-    
-    yt_thm_dl(args.vid)
-    thm_to_cover(f'{args.vid}.jpg')
+    vid = get_yt_vid(args.vid)
+    if vid == None:
+        vid = args.vid
+    yt_thm_dl(vid)
+    thm_to_cover(f'{vid}.jpg')
     if args.clean:
-        os.remove(f'{args.vid}.jpg')
-        print(f'Thumbnail \"{args.vid}.jpg\" removed.')
+        os.remove(f'{vid}.jpg')
+        print(f'Thumbnail \"{vid}.jpg\" removed.')
 
     if not args.ytdlp:
         return 0
-    # yt-dlp common command and argument 
+    # yt-dlp common command and argument
     # Just for my convenience
     try:
         ytdlp_cmd = f'{args.ytdlp_path} '
         ytdlp_cmd += '-f bestaudio --extract-audio --audio-format mp3 --audio-quality 0 --add-metadata '
-        ytdlp_cmd += f'-- \"{args.vid}\"'
+        ytdlp_cmd += f'-- \"{vid}\"'
         subprocess.call(ytdlp_cmd)
     except:
         print('[ERROR] yt-dlp is not install')
         exit(127)
-    
 
 
 if __name__ == '__main__':

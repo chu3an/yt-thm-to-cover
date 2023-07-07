@@ -1,5 +1,6 @@
 import argparse
 import shutil
+from urllib.parse import parse_qs, urlparse
 
 import requests
 
@@ -35,7 +36,7 @@ def yt_thm_dl(vid: str, quality='HD'):
     r = requests.get(url, headers=headers, stream=True)
 
     # Some video does NOT have HD thumbnail, using SD instead
-    if r.status_code != 200:    
+    if r.status_code != 200:
         url_2 = f'https://img.youtube.com/vi/{vid}/{q_dict["SD"]}.jpg'
         r = requests.get(url_2, headers=headers, stream=True)
         print(f'VID=\"{vid}\" does NOT have HD quality, download SD quality.')
@@ -47,6 +48,32 @@ def yt_thm_dl(vid: str, quality='HD'):
         print(f'Thumbnail \"{vid}.jpg\" downloaded.')
     else:
         print(f'Can NOT download \"{vid}.jpg\".')
+
+
+def get_yt_vid(url: str) -> (str | None):
+    """
+    Parse vid from any type of YouTube url
+
+    :param url: YouTube video url
+    :return: vid | None (when parse Fail)
+    """
+    p = urlparse(url)
+
+    if p.hostname == 'youtu.be':
+        return p.path[1:]
+    elif p.hostname in ['www.youtube.com', 'music.youtube.com', 'youtube.com']:
+        if p.path == '/watch':
+            return parse_qs(p.query).get('v')[0]
+        elif p.path[:3] == '/v/':
+            return p.path[3:]
+        elif p.path[:7] == '/embed/':
+            return p.path[7:]
+        elif p.path[:8] == '/shorts/':
+            return p.path[8:]
+        else:
+            return None
+    else:
+        return None
 
 
 def parse_args():
@@ -61,7 +88,10 @@ def parse_args():
 
 def main():
     args = parse_args()
-    yt_thm_dl(args.vid, args.quality)
+    vid = get_yt_vid(args.vid)
+    if vid == None:
+        vid = args.vid
+    yt_thm_dl(vid, args.quality)
 
 
 if __name__ == '__main__':
