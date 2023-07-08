@@ -1,7 +1,2 @@
-certifi==2023.5.7
-charset-normalizer==3.1.0
-idna==3.4
-numpy==1.25.0
-opencv-python==4.8.0.74
-requests==2.31.0
-urllib3==2.0.3
+opencv-python
+requests
